@@ -31,6 +31,21 @@ app.include_router(reports.router)
 app.include_router(settings.router)
 
 
+@app.get("/debug-env")
+async def debug_env():
+    from app.config import get_settings
+    try:
+        s = get_settings()
+        return {
+            "url_prefix": s.supabase_url[:25],
+            "url_len": len(s.supabase_url),
+            "key_prefix": s.supabase_anon_key[:15],
+            "key_len": len(s.supabase_anon_key),
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+
 @app.get("/")
 async def root():
     return RedirectResponse(url="/dashboard")
