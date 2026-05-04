@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -6,6 +7,12 @@ from pathlib import Path
 from app.routers import auth, dashboard, glucose, records, reports, settings
 
 app = FastAPI(title="GlicoTrack")
+
+# diagnóstico temporário — remover após confirmar deploy
+_url = os.environ.get("SUPABASE_URL", "NAO_DEFINIDA")
+_key = os.environ.get("SUPABASE_ANON_KEY", "NAO_DEFINIDA")
+print(f"[DIAG] SUPABASE_URL={_url[:30] if _url else 'VAZIA'}")
+print(f"[DIAG] SUPABASE_ANON_KEY={_key[:20] if _key else 'VAZIA'}")
 
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
 
