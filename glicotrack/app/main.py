@@ -34,16 +34,20 @@ app.include_router(settings.router)
 @app.get("/debug-env")
 async def debug_env():
     from app.config import get_settings
+    from app.services.supabase_client import get_supabase
+    import traceback
     try:
         s = get_settings()
-        return {
-            "url_prefix": s.supabase_url[:25],
-            "url_len": len(s.supabase_url),
-            "key_prefix": s.supabase_anon_key[:15],
-            "key_len": len(s.supabase_anon_key),
-        }
+        sb = get_supabase()
+        sb.auth.sign_in_with_password({"email": "debug@test.com", "password": "wrongpass123"})
+        return {"status": "unexpected_success"}
     except Exception as e:
-        return {"error": str(e)}
+        return {
+            "exception_type": type(e).__name__,
+            "exception_module": type(e).__module__,
+            "message": str(e)[:200],
+            "traceback": traceback.format_exc()[-500:],
+        }
 
 
 @app.get("/")
