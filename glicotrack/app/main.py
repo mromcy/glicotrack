@@ -8,11 +8,18 @@ from app.routers import auth, dashboard, glucose, records, reports, settings
 
 app = FastAPI(title="GlicoTrack")
 
-# diagnóstico temporário — remover após confirmar deploy
-_url = os.environ.get("SUPABASE_URL", "NAO_DEFINIDA")
-_key = os.environ.get("SUPABASE_ANON_KEY", "NAO_DEFINIDA")
-print(f"[D1] URL={_url[:25]!r}")
-print(f"[D2] KEY={_key[:15]!r}")
+# diagnóstico temporário
+_url = os.environ.get("SUPABASE_URL", "")
+_key = os.environ.get("SUPABASE_ANON_KEY", "")
+print(f"[D1]{_url[:30]!r}")
+print(f"[D2]{_key[:20]!r}")
+try:
+    from app.config import get_settings
+    _s = get_settings()
+    print(f"[D3]{_s.supabase_url[:30]!r}")
+    print(f"[D4]{_s.supabase_anon_key[:20]!r}")
+except Exception as _e:
+    print(f"[D5]settings_error={_e}")
 
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
 
