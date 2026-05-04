@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block title %}Histórico de Registros — GlicoTrack{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+    <div>
+        <h1 class="text-2xl font-bold text-blue-900">Histórico de Registros</h1>
+        <p class="text-gray-500 text-sm mt-0.5">Refeições, atividades, medicamentos e mais</p>
+    </div>
+    <a href="/registros/novo"
+       class="flex items-center gap-2 bg-blue-700 hover:bg-blue-800 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        Novo registro
+    </a>
+</div>
+
+<!-- Seletor de período -->
+<div class="flex gap-2 mb-6 flex-wrap">
+    {% for val, label in [('hoje','Hoje'), ('3dias','3 Dias'), ('semana','Semana'), ('mes','Mês'), ('ano','Ano')] %}
+    <a href="/registros/historico?periodo={{ val }}"
+       class="px-4 py-1.5 rounded-full text-sm font-medium transition
+              {% if periodo == val %}bg-blue-700 text-white shadow{% else %}bg-white border border-gray-200 text-gray-600 hover:border-blue-400 hover:text-blue-700{% endif %}">
+        {{ label }}
+    </a>
+    {% endfor %}
+</div>
+
+<div class="space-y-5">
+
+    <!-- Refeições -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+            <div class="flex items-center gap-2">
+                <span class="text-xl">🍽️</span>
+                <h2 class="font-semibold text-gray-800">Refeições</h2>
+            </div>
+            <span class="bg-orange-100 text-orange-700 text-xs font-bold px-2.5 py-1 rounded-full">{{ refeicoes | length }}</span>
+        </div>
+        {% if refeicoes %}
+        <div class="divide-y divide-gray-50">
+            {% for r in refeicoes %}
+            <div class="flex items-start justify-between px-5 py-3">
+                <div>
+                    <span class="text-xs font-semibold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full">{{ r._tipo_label }}</span>
+                    <p class="text-sm text-gray-700 mt-1">{{ r.description }}</p>
+                </div>
+                <span class="text-xs text-gray-400 whitespace-nowrap ml-4">{{ r._dt }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-400 text-sm px-5 py-4">Nenhuma refeição registrada neste período.</p>
+        {% endif %}
+    </div>
+
+    <!-- Atividades físicas -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+            <div class="flex items-center gap-2">
+                <span class="text-xl">🏃</span>
+                <h2 class="font-semibold text-gray-800">Atividades Físicas</h2>
+            </div>
+            <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">{{ atividades | length }}</span>
+        </div>
+        {% if atividades %}
+        <div class="divide-y divide-gray-50">
+            {% for a in atividades %}
+            <div class="flex items-center justify-between px-5 py-3">
+                <div class="flex items-center gap-3">
+                    <p class="text-sm font-medium text-gray-700 capitalize">{{ a.type }}</p>
+                    {% if a.duration_minutes %}
+                    <span class="text-xs text-gray-400">{{ a.duration_minutes }} min</span>
+                    {% endif %}
+                </div>
+                <span class="text-xs text-gray-400 whitespace-nowrap ml-4">{{ a._dt }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-400 text-sm px-5 py-4">Nenhuma atividade registrada neste período.</p>
+        {% endif %}
+    </div>
+
+    <!-- Medicamentos -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+            <div class="flex items-center gap-2">
+                <span class="text-xl">💊</span>
+                <h2 class="font-semibold text-gray-800">Medicamentos</h2>
+            </div>
+            <span class="bg-purple-100 text-purple-700 text-xs font-bold px-2.5 py-1 rounded-full">{{ medicamentos | length }}</span>
+        </div>
+        {% if medicamentos %}
+        <div class="divide-y divide-gray-50">
+            {% for m in medicamentos %}
+            <div class="flex items-center justify-between px-5 py-3">
+                <div class="flex items-center gap-3">
+                    <p class="text-sm font-medium text-gray-700">{{ m.medication_name }}</p>
+                    {% if m.dose %}
+                    <span class="text-xs text-gray-400">{{ m.dose }}</span>
+                    {% endif %}
+                </div>
+                <span class="text-xs text-gray-400 whitespace-nowrap ml-4">{{ m._dt }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-400 text-sm px-5 py-4">Nenhum medicamento registrado neste período.</p>
+        {% endif %}
+    </div>
+
+    <!-- Sintomas -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+            <div class="flex items-center gap-2">
+                <span class="text-xl">🤒</span>
+                <h2 class="font-semibold text-gray-800">Sintomas</h2>
+            </div>
+            <span class="bg-red-100 text-red-700 text-xs font-bold px-2.5 py-1 rounded-full">{{ sintomas | length }}</span>
+        </div>
+        {% if sintomas %}
+        <div class="divide-y divide-gray-50">
+            {% for s in sintomas %}
+            <div class="flex items-start justify-between px-5 py-3">
+                <div>
+                    <div class="flex flex-wrap gap-1.5">
+                        {% for label in s._labels %}
+                        <span class="text-xs bg-red-50 text-red-600 px-2 py-0.5 rounded-full">{{ label }}</span>
+                        {% endfor %}
+                    </div>
+                    {% if s.notes %}
+                    <p class="text-xs text-gray-500 mt-1">{{ s.notes }}</p>
+                    {% endif %}
+                </div>
+                <span class="text-xs text-gray-400 whitespace-nowrap ml-4">{{ s._dt }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-400 text-sm px-5 py-4">Nenhum sintoma registrado neste período.</p>
+        {% endif %}
+    </div>
+
+    <!-- Sinais vitais -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+            <div class="flex items-center gap-2">
+                <span class="text-xl">❤️</span>
+                <h2 class="font-semibold text-gray-800">Sinais Vitais</h2>
+            </div>
+            <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-full">{{ sinais_vitais | length }}</span>
+        </div>
+        {% if sinais_vitais %}
+        <div class="divide-y divide-gray-50">
+            {% for sv in sinais_vitais %}
+            <div class="flex items-center justify-between px-5 py-3">
+                <div class="flex items-center gap-4 text-sm text-gray-700">
+                    {% if sv.weight_kg %}
+                    <span>⚖️ <b>{{ sv.weight_kg }}</b> kg</span>
+                    {% endif %}
+                    {% if sv.systolic_bp and sv.diastolic_bp %}
+                    <span>🫀 <b>{{ sv.systolic_bp }}/{{ sv.diastolic_bp }}</b> mmHg</span>
+                    {% endif %}
+                </div>
+                <span class="text-xs text-gray-400 whitespace-nowrap ml-4">{{ sv._dt }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-400 text-sm px-5 py-4">Nenhum sinal vital registrado neste período.</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

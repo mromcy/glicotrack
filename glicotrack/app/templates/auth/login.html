@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — GlicoTrack</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex">
+
+    <!-- Painel esquerdo (apenas desktop) -->
+    <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-900 to-blue-600 text-white flex-col justify-between p-12">
+        <div>
+            <div class="text-4xl mb-2">💉</div>
+            <h1 class="text-3xl font-bold">GlicoTrack</h1>
+            <p class="text-blue-200 mt-1">Acompanhamento de Glicemia</p>
+        </div>
+        <div class="space-y-6">
+            <div class="flex items-start gap-4">
+                <div class="text-2xl mt-1">📊</div>
+                <div>
+                    <p class="font-semibold">Histórico completo</p>
+                    <p class="text-blue-200 text-sm">Acompanhe a evolução da glicemia com gráficos e filtros por período.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-4">
+                <div class="text-2xl mt-1">🟢</div>
+                <div>
+                    <p class="font-semibold">Indicadores visuais</p>
+                    <p class="text-blue-200 text-sm">Verde, amarelo e vermelho indicam se a glicemia está dentro do esperado.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-4">
+                <div class="text-2xl mt-1">📄</div>
+                <div>
+                    <p class="font-semibold">Relatório para o médico</p>
+                    <p class="text-blue-200 text-sm">Gere um PDF completo para levar na consulta.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-4">
+                <div class="text-2xl mt-1">👨‍👩‍👧</div>
+                <div>
+                    <p class="font-semibold">Acesso familiar</p>
+                    <p class="text-blue-200 text-sm">Paciente e responsáveis acompanham os mesmos dados em tempo real.</p>
+                </div>
+            </div>
+        </div>
+        <p class="text-blue-300 text-xs">Desenvolvido para pacientes com Diabetes Tipo 2</p>
+    </div>
+
+    <!-- Painel direito: formulário -->
+    <div class="flex-1 flex items-center justify-center bg-gray-50 px-6 py-12">
+        <div class="w-full max-w-md">
+            <div class="lg:hidden text-center mb-8">
+                <div class="text-5xl mb-2">💉</div>
+                <h1 class="text-2xl font-bold text-blue-800">GlicoTrack</h1>
+                <p class="text-gray-500 text-sm">Acompanhamento de glicemia</p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg p-8">
+                <h2 class="text-xl font-bold text-gray-800 mb-6">Entrar na sua conta</h2>
+
+                {% if erro %}
+                <div class="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-4">
+                    <span>⚠️</span> {{ erro }}
+                </div>
+                {% endif %}
+
+                {% if sucesso %}
+                <div class="flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg px-4 py-3 mb-4">
+                    <span>✅</span> {{ sucesso }}
+                </div>
+                {% endif %}
+
+                <form method="POST" action="/login" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-3 text-gray-400">📧</span>
+                            <input type="email" name="email" required
+                                   class="w-full border border-gray-300 rounded-lg pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                   placeholder="seu@email.com">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-3 text-gray-400">🔒</span>
+                            <input type="password" name="password" required
+                                   class="w-full border border-gray-300 rounded-lg pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                   placeholder="••••••••">
+                        </div>
+                    </div>
+                    <button type="submit"
+                            class="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 rounded-lg transition text-sm shadow">
+                        Entrar
+                    </button>
+                </form>
+
+                <p class="text-center text-sm text-gray-500 mt-5">
+                    Não tem conta?
+                    <a href="/cadastro" class="text-blue-600 font-medium hover:underline">Criar conta</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

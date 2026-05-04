@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Relatório PDF — GlicoTrack{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto">
+    <div class="flex items-center gap-3 mb-6">
+        <div class="bg-blue-100 text-blue-700 p-2.5 rounded-xl">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+        </div>
+        <div>
+            <h1 class="text-2xl font-bold text-blue-900">Relatório para o Médico</h1>
+            <p class="text-gray-500 text-sm mt-0.5">Gere um PDF com o histórico do período</p>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-5">
+        <h2 class="font-semibold text-gray-700 mb-4">📅 Selecione o período</h2>
+        <form method="GET" action="/relatorio/pdf" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1.5">Data inicial</label>
+                    <input type="date" name="data_inicio" value="{{ data_inicio }}" required
+                           class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1.5">Data final</label>
+                    <input type="date" name="data_fim" value="{{ data_fim }}" required
+                           class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
+
+            <!-- Atalhos de período -->
+            <div class="flex flex-wrap gap-2">
+                <p class="text-xs text-gray-400 w-full">Atalhos:</p>
+                <button type="button" onclick="setPeriodo(7)"
+                        class="text-xs bg-gray-100 hover:bg-blue-100 hover:text-blue-700 text-gray-600 px-3 py-1.5 rounded-lg transition">
+                    Últimos 7 dias
+                </button>
+                <button type="button" onclick="setPeriodo(15)"
+                        class="text-xs bg-gray-100 hover:bg-blue-100 hover:text-blue-700 text-gray-600 px-3 py-1.5 rounded-lg transition">
+                    Últimos 15 dias
+                </button>
+                <button type="button" onclick="setPeriodo(30)"
+                        class="text-xs bg-gray-100 hover:bg-blue-100 hover:text-blue-700 text-gray-600 px-3 py-1.5 rounded-lg transition">
+                    Últimos 30 dias
+                </button>
+                <button type="button" onclick="setPeriodo(90)"
+                        class="text-xs bg-gray-100 hover:bg-blue-100 hover:text-blue-700 text-gray-600 px-3 py-1.5 rounded-lg transition">
+                    Últimos 3 meses
+                </button>
+            </div>
+
+            <button type="submit"
+                    class="w-full flex items-center justify-center gap-2 bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 rounded-xl shadow transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                Baixar PDF
+            </button>
+        </form>
+    </div>
+
+    <!-- O que o relatório inclui -->
+    <div class="bg-blue-50 border border-blue-100 rounded-2xl p-5">
+        <p class="text-sm font-semibold text-blue-800 mb-3">📋 O relatório inclui:</p>
+        <ul class="space-y-2 text-sm text-blue-700">
+            <li class="flex items-center gap-2">✅ Todas as leituras de glicemia do período</li>
+            <li class="flex items-center gap-2">✅ Média, mínimo, máximo e total de alertas</li>
+            <li class="flex items-center gap-2">✅ Classificação por cor (Normal / Atenção / Alerta)</li>
+            <li class="flex items-center gap-2">✅ Histórico de medicamentos tomados</li>
+            <li class="flex items-center gap-2">✅ Rodapé com orientação médica</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function setPeriodo(dias) {
+    const hoje = new Date();
+    const inicio = new Date();
+    inicio.setDate(hoje.getDate() - dias);
+
+    const fmt = d => d.toISOString().split('T')[0];
+    document.querySelector('[name="data_inicio"]').value = fmt(inicio);
+    document.querySelector('[name="data_fim"]').value = fmt(hoje);
+}
+</script>
+{% endblock %}

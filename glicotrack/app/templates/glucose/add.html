@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}Registrar Glicemia — GlicoTrack{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto">
+    <div class="flex items-center gap-3 mb-6">
+        <div class="bg-blue-100 text-blue-700 p-2.5 rounded-xl">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <div>
+            <h1 class="text-2xl font-bold text-blue-900">Registrar Glicemia</h1>
+            <p class="text-gray-500 text-sm">Informe o valor medido agora</p>
+        </div>
+    </div>
+
+    {% if erro %}
+    <div class="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 mb-4">
+        ⚠️ {{ erro }}
+    </div>
+    {% endif %}
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <form method="POST" action="/glicemia/registrar" class="space-y-5">
+
+            <!-- Valor -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                    💉 Valor da glicemia <span class="font-normal text-gray-400">(mg/dL)</span>
+                </label>
+                <input type="number" name="value" required min="20" max="600" step="0.1"
+                       class="w-full border-2 border-gray-200 rounded-xl px-4 py-3.5 text-2xl font-bold text-center focus:outline-none focus:border-blue-500 transition"
+                       placeholder="000">
+            </div>
+
+            <!-- Momento -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5">🕐 Momento da medição</label>
+                <div class="grid grid-cols-2 gap-2">
+                    {% for val, label, icon in [
+                        ('jejum', 'Jejum', '🌅'),
+                        ('pre_refeicao', 'Pré-refeição', '🍽️'),
+                        ('pos_refeicao', 'Pós-refeição (2h)', '⏱️'),
+                        ('outro', 'Outro momento', '🕐')
+                    ] %}
+                    <label class="flex items-center gap-2 border-2 border-gray-200 rounded-xl px-3 py-2.5 cursor-pointer hover:border-blue-400 has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 transition text-sm">
+                        <input type="radio" name="measurement_type" value="{{ val }}" {% if val == 'jejum' %}checked{% endif %} class="accent-blue-600">
+                        <span>{{ icon }} {{ label }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Método -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5">🔬 Método de medição</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <label class="flex items-center gap-2 border-2 border-gray-200 rounded-xl px-3 py-2.5 cursor-pointer hover:border-blue-400 has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 transition text-sm">
+                        <input type="radio" name="measurement_method" value="glicosimetro" checked class="accent-blue-600">
+                        <span>🩸 Glicosímetro</span>
+                    </label>
+                    <label class="flex items-center gap-2 border-2 border-gray-200 rounded-xl px-3 py-2.5 cursor-pointer hover:border-blue-400 has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 transition text-sm">
+                        <input type="radio" name="measurement_method" value="sensor_continuo" class="accent-blue-600">
+                        <span>📡 Sensor Contínuo</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Data/hora -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                    📅 Data e hora
+                </label>
+                <input type="datetime-local" name="measured_at" id="measured_at"
+                       class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition">
+                <p class="text-xs text-gray-400 mt-1">Preenchido automaticamente com o horário local. Altere se necessário.</p>
+            </div>
+
+            <!-- Observações -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                    📝 Observações <span class="font-normal text-gray-400">(opcional)</span>
+                </label>
+                <textarea name="notes" rows="2"
+                          class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition resize-none"
+                          placeholder="Ex: após o almoço, senti tontura..."></textarea>
+            </div>
+
+            <div class="flex gap-3 pt-1">
+                <button type="submit"
+                        class="flex-1 bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 rounded-xl shadow transition">
+                    Salvar registro
+                </button>
+                <a href="/dashboard"
+                   class="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-3 rounded-xl transition">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Faixas de referência -->
+    <div class="mt-4 bg-blue-50 border border-blue-100 rounded-2xl p-4">
+        <p class="text-xs font-bold text-blue-800 uppercase tracking-wide mb-3">📋 Faixas de referência — Tipo 2</p>
+        <div class="grid grid-cols-2 gap-3 text-xs">
+            <div class="bg-white rounded-xl p-3">
+                <p class="font-semibold text-gray-600 mb-1">🌅 Jejum</p>
+                <p class="text-green-600">🟢 Normal: &lt; 100</p>
+                <p class="text-yellow-600">🟡 Atenção: 100–125</p>
+                <p class="text-red-600">🔴 Alerta: ≥ 126</p>
+            </div>
+            <div class="bg-white rounded-xl p-3">
+                <p class="font-semibold text-gray-600 mb-1">⏱️ Pós-refeição (2h)</p>
+                <p class="text-green-600">🟢 Normal: &lt; 140</p>
+                <p class="text-yellow-600">🟡 Atenção: 140–179</p>
+                <p class="text-red-600">🔴 Alerta: ≥ 180</p>
+            </div>
+        </div>
+        <p class="text-red-600 text-xs mt-2 font-semibold">⚠️ Hipoglicemia: &lt; 70 mg/dL — qualquer momento do dia</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const agora = new Date();
+    const offset = agora.getTimezoneOffset() * 60000;
+    const horaLocal = new Date(agora - offset).toISOString().slice(0, 16);
+    document.getElementById('measured_at').value = horaLocal;
+</script>
+{% endblock %}
