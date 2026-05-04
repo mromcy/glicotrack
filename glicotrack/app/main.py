@@ -11,8 +11,8 @@ app = FastAPI(title="GlicoTrack")
 # diagnóstico temporário — remover após confirmar deploy
 _url = os.environ.get("SUPABASE_URL", "NAO_DEFINIDA")
 _key = os.environ.get("SUPABASE_ANON_KEY", "NAO_DEFINIDA")
-print(f"[DIAG] SUPABASE_URL={_url[:30] if _url else 'VAZIA'}")
-print(f"[DIAG] SUPABASE_ANON_KEY={_key[:20] if _key else 'VAZIA'}")
+print(f"[D1] URL={_url[:25]!r}")
+print(f"[D2] KEY={_key[:15]!r}")
 
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
 
